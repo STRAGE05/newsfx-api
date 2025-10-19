@@ -41,12 +41,12 @@ def fetch_ff_graph(event_id: str) -> dict:
                 return r.json()
             except Exception as e:
                 t = text.lstrip()
-                if t.startswith(\")]}',\"):  # іноді API префіксує JSON
+                if t.startswith(")]}',"):  # іноді API префіксує JSON
                     t = t[5:]
                 try:
                     return json.loads(t)
                 except Exception:
-                    logging.warning(f\"[FF] JSON parse failed: {e}\")
+                    logging.warning(f"[FF] JSON parse failed: {e}")
                     attempts.append((status, 'json-parse-failed'))
                     continue
 
@@ -58,7 +58,7 @@ def fetch_ff_graph(event_id: str) -> dict:
         attempts.append((status, snippet))
         break
 
-    raise RuntimeError(f\"FF fetch failed after retries: {attempts}\")
+    raise RuntimeError(f"FF fetch failed after retries: {attempts}")
 
 @app.after_request
 def add_cors(resp):
@@ -101,7 +101,7 @@ def api():
         return jsonify({'labels': labels, 'actualData': actual_data, 'forecastData': forecast_data}), 200
 
     except Exception as e:
-        logging.error(\"[API] error: %s\\n%s\", str(e), traceback.format_exc())
+        logging.error("[API] error: %s\\n%s", str(e), traceback.format_exc())
         return jsonify({'error': 'Upstream fetch failed', 'details': str(e)}), 502
 
 if __name__ == '__main__':
